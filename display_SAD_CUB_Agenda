@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Slide</title>
+<style>
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh; 
+        margin: 0;
+        background-image: url('https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2212/7542749/500h_q95.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* --- MODIFIED: Removed aspect-ratio and set a direct height --- */
+    #slide-container { 
+        width: 75%; 
+        max-width: 950px; 
+        height: 80%; /* Set a direct height relative to the viewport */
+        background-color: white; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+        display: flex; 
+        flex-direction: column; 
+        border: 3px solid #000000;
+    }
+    /* --- END OF MODIFIED SECTION --- */
+
+    #slide-header { 
+        background-color: #003b56;
+        color: white; 
+        padding: 10px 20px;
+        text-align: center;
+    }
+    #slide-header h1 { 
+        margin: 0; 
+        font-size: 2.2em;
+        font-weight: 500; 
+    }
+
+    #slide-main { flex-grow: 1; padding: 30px; font-size: 1.8em; display: flex; flex-direction: column; overflow-y: auto; /* Allow scrolling if content overflows */ }
+    #agenda-list { list-style-type: decimal; padding-left: 50px; margin: 0; }
+    #agenda-list li { padding: 5px 0; }
+    
+    #slide-footer { 
+        height: 8px;
+        background-color: #003b56; 
+    }
+    
+    #edit-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 100;
+    }
+</style>
+</head>
+<body>
+
+<div id="slide-container">
+    <div id="slide-header">
+        <h1>SAD CUB Agenda</h1>
+    </div>
+    <div id="slide-main">
+        <ol id="agenda-list"></ol>
+    </div>
+    <div id="slide-footer"></div>
+</div>
+
+<a id="edit-btn" href="edit.html" title="Edit Agenda">&#9881;</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const agendaList = document.getElementById('agenda-list');
+
+        function renderAgenda() {
+            const agendaText = localStorage.getItem('agendaData');
+            if (agendaText) {
+                const agendaItems = agendaText.split('\\n').filter(item => item.trim() !== '');
+                agendaList.innerHTML = '';
+                agendaItems.forEach(itemText => {
+                    const newListItem = document.createElement('li');
+                    newListItem.innerText = itemText;
+                    agendaList.appendChild(newListItem);
+                });
+            }
+        }
+        
+        renderAgenda();
+
+        window.addEventListener('storage', function() {
+            renderAgenda();
+        });
+    });
+</script>
+
+</body>
+</html>
