@@ -3,26 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shared Agenda Slide</title>
+<title>Auto-Sizing Agenda Slide</title>
 <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-image: url('https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2212/7542749/500h_q95.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; }
     #slide-container { width: 75%; max-width: 950px; height: 80%; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; border: 3px solid #000000; }
     #slide-header { background-color: #003b56; color: white; padding: 10px 20px; text-align: center; }
     #slide-header h1 { margin: 0; font-size: 2.2em; font-weight: 500; }
-    
-/* --- MODIFIED: Font size and alignment updated --- */
     #slide-main { 
         flex-grow: 1; 
         padding: 30px; 
-        font-size: 1em; /* Reduced to 1em */
-        text-align: center; /* Centered the text */
         display: flex; 
         flex-direction: column; 
-        overflow-y: auto; 
+        overflow: hidden; /* Important: Hide overflow while we calculate */
     }
-    /* --- END OF MODIFIED SECTION --- */
-
-    #agenda-list { list-style-type: none; padding-left: 0; margin: 0; }
+    #agenda-list { 
+        list-style-type: none; 
+        padding-left: 0; 
+        margin: 0;
+        text-align: center;
+        /* font-size is now set by JS */
+    }
     #agenda-list li { padding: 8px 0; }
     #slide-footer { height: 8px; background-color: #003b56; }
     #edit-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: #007bff; color: white; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
@@ -32,7 +32,7 @@
 
 <div id="slide-container">
     <div id="slide-header">
-        <h1>SAD CUB Agenda</h1>
+        <h1>Agenda</h1>
     </div>
     <div id="slide-main">
         <div id="agenda-list"></div>
@@ -45,7 +45,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
-    // --- Your new Firebase Config for the Agenda App ---
+    // --- Your Firebase Config ---
     const firebaseConfig = {
       apiKey: "AIzaSyAJFEiLuC5J9N5c-pXgS1qvQri_ExpbuGE",
       authDomain: "sad-cub-agenda.firebaseapp.com",
@@ -62,17 +62,41 @@
     const database = firebase.database();
 
     document.addEventListener('DOMContentLoaded', function() {
+        const slideMain = document.getElementById('slide-main');
         const agendaListDiv = document.getElementById('agenda-list');
         const agendaRef = database.ref('agendaContent');
 
+        // --- NEW: AUTO-SIZING FUNCTION ---
+        function adjustFontSize() {
+            const MAX_FONT_SIZE = 1.8; // The largest size you want the text to be (in em)
+            const MIN_FONT_SIZE = 0.5; // The smallest size before it becomes unreadable
+            const STEP = 0.05;         // How much to shrink the font in each step
+
+            // 1. Reset to the largest possible font size first
+            let currentSize = MAX_FONT_SIZE;
+            agendaListDiv.style.fontSize = currentSize + 'em';
+
+            // 2. If the content is taller than its container, shrink the font
+            while (agendaListDiv.scrollHeight > slideMain.clientHeight && currentSize > MIN_FONT_SIZE) {
+                currentSize -= STEP;
+                agendaListDiv.style.fontSize = currentSize + 'em';
+            }
+        }
+
+        // --- Real-time listener ---
         agendaRef.on('value', (snapshot) => {
             const agendaHtml = snapshot.val();
             if (agendaHtml) {
                 agendaListDiv.innerHTML = agendaHtml;
+                // --- NEW: Call the auto-sizing function after content is loaded ---
+                adjustFontSize();
             } else {
                 agendaListDiv.innerHTML = '';
             }
         });
+
+        // Also adjust font size if the window is resized
+        window.addEventListener('resize', adjustFontSize);
     });
 </script>
 
