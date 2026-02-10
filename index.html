@@ -9,19 +9,22 @@
     #slide-container { width: 75%; max-width: 950px; height: 80%; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; border: 3px solid #000000; }
     #slide-header { background-color: #003b56; color: white; padding: 10px 20px; text-align: center; }
     #slide-header h1 { margin: 0; font-size: 2.2em; font-weight: 500; }
+    
+    /* --- MODIFIED: Restored text-align and set a base font size --- */
     #slide-main { 
         flex-grow: 1; 
-        padding: 30px; 
-        display: flex; 
-        flex-direction: column; 
-        overflow: hidden; /* Important: Hide overflow while we calculate */
+        padding: 30px;
+        text-align: center; /* Restore centering */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Vertically center content */
+        overflow: hidden;
     }
     #agenda-list { 
         list-style-type: none; 
         padding-left: 0; 
         margin: 0;
-        text-align: center;
-        /* font-size is now set by JS */
+        /* Font size will be dynamically adjusted by JavaScript */
     }
     #agenda-list li { padding: 8px 0; }
     #slide-footer { height: 8px; background-color: #003b56; }
@@ -66,20 +69,20 @@
         const agendaListDiv = document.getElementById('agenda-list');
         const agendaRef = database.ref('agendaContent');
 
-        // --- NEW: AUTO-SIZING FUNCTION ---
+        // --- CORRECTED: AUTO-SIZING FUNCTION ---
         function adjustFontSize() {
-            const MAX_FONT_SIZE = 1.8; // The largest size you want the text to be (in em)
-            const MIN_FONT_SIZE = 0.5; // The smallest size before it becomes unreadable
-            const STEP = 0.05;         // How much to shrink the font in each step
+            const MAX_FONT_SIZE = 2.0; // Starting with a larger max size (em)
+            const MIN_FONT_SIZE = 0.5;
+            const STEP = 0.05;
 
-            // 1. Reset to the largest possible font size first
+            // Reset to default max size first
             let currentSize = MAX_FONT_SIZE;
-            agendaListDiv.style.fontSize = currentSize + 'em';
+            slideMain.style.fontSize = currentSize + 'em';
 
-            // 2. If the content is taller than its container, shrink the font
-            while (agendaListDiv.scrollHeight > slideMain.clientHeight && currentSize > MIN_FONT_SIZE) {
+            // Shrink font size if content overflows its container
+            while (slideMain.scrollHeight > slideMain.clientHeight && currentSize > MIN_FONT_SIZE) {
                 currentSize -= STEP;
-                agendaListDiv.style.fontSize = currentSize + 'em';
+                slideMain.style.fontSize = currentSize + 'em';
             }
         }
 
@@ -88,14 +91,13 @@
             const agendaHtml = snapshot.val();
             if (agendaHtml) {
                 agendaListDiv.innerHTML = agendaHtml;
-                // --- NEW: Call the auto-sizing function after content is loaded ---
-                adjustFontSize();
+                adjustFontSize(); // Adjust after content is loaded
             } else {
                 agendaListDiv.innerHTML = '';
             }
         });
 
-        // Also adjust font size if the window is resized
+        // Re-adjust on window resize
         window.addEventListener('resize', adjustFontSize);
     });
 </script>
