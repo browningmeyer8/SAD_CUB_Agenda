@@ -9,7 +9,18 @@
     #slide-container { width: 75%; max-width: 950px; height: 80%; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; border: 3px solid #000000; }
     #slide-header { background-color: #003b56; color: white; padding: 10px 20px; text-align: center; }
     #slide-header h1 { margin: 0; font-size: 2.2em; font-weight: 500; }
-    #slide-main { flex-grow: 1; padding: 30px; font-size: 1.8em; display: flex; flex-direction: column; overflow-y: auto; }
+    
+    /* --- MODIFIED: Reduced the font size --- */
+    #slide-main { 
+        flex-grow: 1; 
+        padding: 30px; 
+        font-size: 1.2em; /* Reduced from 1.8em to match the editor */
+        display: flex; 
+        flex-direction: column; 
+        overflow-y: auto; 
+    }
+    /* --- END OF MODIFIED SECTION --- */
+
     #agenda-list { list-style-type: none; padding-left: 0; margin: 0; }
     #agenda-list li { padding: 8px 0; }
     #slide-footer { height: 8px; background-color: #003b56; }
@@ -32,7 +43,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
 <script>
     // --- Your new Firebase Config for the Agenda App ---
     const firebaseConfig = {
