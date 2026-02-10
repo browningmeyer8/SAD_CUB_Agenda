@@ -10,21 +10,22 @@
     #slide-header { background-color: #003b56; color: white; padding: 10px 20px; text-align: center; }
     #slide-header h1 { margin: 0; font-size: 2.2em; font-weight: 500; }
     
-    /* --- MODIFIED: Restored text-align and set a base font size --- */
+    /* --- MODIFIED: Reduced the padding --- */
     #slide-main { 
         flex-grow: 1; 
-        padding: 15px;
-        text-align: center; /* Restore centering */
+        padding: 15px; /* Reduced from 30px */
+        text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: center; /* Vertically center content */
+        justify-content: center;
         overflow: hidden;
     }
+    /* --- END OF MODIFIED SECTION --- */
+
     #agenda-list { 
         list-style-type: none; 
         padding-left: 0; 
         margin: 0;
-        /* Font size will be dynamically adjusted by JavaScript */
     }
     #agenda-list li { padding: 8px 0; }
     #slide-footer { height: 8px; background-color: #003b56; }
@@ -69,35 +70,30 @@
         const agendaListDiv = document.getElementById('agenda-list');
         const agendaRef = database.ref('agendaContent');
 
-        // --- CORRECTED: AUTO-SIZING FUNCTION ---
         function adjustFontSize() {
-            const MAX_FONT_SIZE = 2.0; // Starting with a larger max size (em)
+            const MAX_FONT_SIZE = 2.0;
             const MIN_FONT_SIZE = 0.5;
             const STEP = 0.05;
 
-            // Reset to default max size first
             let currentSize = MAX_FONT_SIZE;
             slideMain.style.fontSize = currentSize + 'em';
 
-            // Shrink font size if content overflows its container
             while (slideMain.scrollHeight > slideMain.clientHeight && currentSize > MIN_FONT_SIZE) {
                 currentSize -= STEP;
                 slideMain.style.fontSize = currentSize + 'em';
             }
         }
 
-        // --- Real-time listener ---
         agendaRef.on('value', (snapshot) => {
             const agendaHtml = snapshot.val();
             if (agendaHtml) {
                 agendaListDiv.innerHTML = agendaHtml;
-                adjustFontSize(); // Adjust after content is loaded
+                adjustFontSize();
             } else {
                 agendaListDiv.innerHTML = '';
             }
         });
 
-        // Re-adjust on window resize
         window.addEventListener('resize', adjustFontSize);
     });
 </script>
