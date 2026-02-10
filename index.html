@@ -39,16 +39,17 @@
         font-weight: 500; 
     }
     
-    /* --- MODIFIED: Reverted to fixed font size and vertical centering --- */
+    /* --- MODIFIED: Added line-height for tighter spacing --- */
     #slide-main { 
         flex-grow: 1; 
-        padding: 7.5px;
-        font-size: 1em; /* Set fixed font size */
+        padding: 15px;
+        font-size: 1em;
         text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: center; /* Vertically center content */
-        overflow-y: auto; /* Allow scrolling if content overflows */
+        justify-content: center;
+        overflow-y: auto;
+        line-height: 1.2; /* Reduce space between lines */
     }
     /* --- END OF MODIFIED SECTION --- */
 
@@ -57,7 +58,10 @@
         padding-left: 0; 
         margin: 0;
     }
-    #agenda-list li { padding: 8px 0; }
+    /* --- MODIFIED: Reduced padding between list items --- */
+    #agenda-list li { 
+        padding: 4px 0; /* Reduced from 8px */
+    }
     #slide-footer { 
         height: 8px;
         background-color: #003b56; 
@@ -115,12 +119,10 @@
     }
     const database = firebase.database();
 
-    // --- SCRIPT MODIFIED: Removed auto-sizing logic ---
     document.addEventListener('DOMContentLoaded', function() {
         const agendaListDiv = document.getElementById('agenda-list');
         const agendaRef = database.ref('agendaContent');
 
-        // Real-time listener just loads the content now
         agendaRef.on('value', (snapshot) => {
             const agendaHtml = snapshot.val();
             if (agendaHtml) {
@@ -129,8 +131,6 @@
                 agendaListDiv.innerHTML = '';
             }
         });
-
-        // The 'resize' listener is no longer needed
     });
 </script>
 
