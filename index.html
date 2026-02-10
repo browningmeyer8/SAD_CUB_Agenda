@@ -3,22 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto-Sizing Agenda Slide</title>
+<title>Agenda Slide</title>
 <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-image: url('https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2212/7542749/500h_q95.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; }
-    #slide-container { width: 75%; max-width: 950px; height: 80%; background-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; border: 3px solid #000000; }
-    #slide-header { background-color: #003b56; color: white; padding: 10px 20px; text-align: center; }
-    #slide-header h1 { margin: 0; font-size: 2.2em; font-weight: 500; }
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh; 
+        margin: 0;
+        background-image: url('https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2212/7542749/500h_q95.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    #slide-container { 
+        width: 75%; 
+        max-width: 950px; 
+        height: 80%; 
+        background-color: white; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+        display: flex; 
+        flex-direction: column; 
+        border: 3px solid #000000;
+    }
+    #slide-header { 
+        background-color: #003b56;
+        color: white; 
+        padding: 10px 20px;
+        text-align: center;
+    }
+    #slide-header h1 { 
+        margin: 0; 
+        font-size: 2.2em; 
+        font-weight: 500; 
+    }
     
-    /* --- MODIFIED: Reduced the padding --- */
+    /* --- MODIFIED: Reverted to fixed font size and vertical centering --- */
     #slide-main { 
         flex-grow: 1; 
-        padding: 7.5px; /* Reduced from 30px */
-        text-align: left;
+        padding: 7.5px;
+        font-size: 1em; /* Set fixed font size */
+        text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        overflow: hidden;
+        justify-content: center; /* Vertically center content */
+        overflow-y: auto; /* Allow scrolling if content overflows */
     }
     /* --- END OF MODIFIED SECTION --- */
 
@@ -28,8 +58,28 @@
         margin: 0;
     }
     #agenda-list li { padding: 8px 0; }
-    #slide-footer { height: 8px; background-color: #003b56; }
-    #edit-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: #007bff; color: white; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
+    #slide-footer { 
+        height: 8px;
+        background-color: #003b56; 
+    }
+    #edit-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 100;
+    }
 </style>
 </head>
 <body>
@@ -65,36 +115,22 @@
     }
     const database = firebase.database();
 
+    // --- SCRIPT MODIFIED: Removed auto-sizing logic ---
     document.addEventListener('DOMContentLoaded', function() {
-        const slideMain = document.getElementById('slide-main');
         const agendaListDiv = document.getElementById('agenda-list');
         const agendaRef = database.ref('agendaContent');
 
-        function adjustFontSize() {
-            const MAX_FONT_SIZE = 2.0;
-            const MIN_FONT_SIZE = 0.5;
-            const STEP = 0.05;
-
-            let currentSize = MAX_FONT_SIZE;
-            slideMain.style.fontSize = currentSize + 'em';
-
-            while (slideMain.scrollHeight > slideMain.clientHeight && currentSize > MIN_FONT_SIZE) {
-                currentSize -= STEP;
-                slideMain.style.fontSize = currentSize + 'em';
-            }
-        }
-
+        // Real-time listener just loads the content now
         agendaRef.on('value', (snapshot) => {
             const agendaHtml = snapshot.val();
             if (agendaHtml) {
                 agendaListDiv.innerHTML = agendaHtml;
-                adjustFontSize();
             } else {
                 agendaListDiv.innerHTML = '';
             }
         });
 
-        window.addEventListener('resize', adjustFontSize);
+        // The 'resize' listener is no longer needed
     });
 </script>
 
